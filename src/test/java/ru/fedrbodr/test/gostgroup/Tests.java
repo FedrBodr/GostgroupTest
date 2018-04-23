@@ -1,8 +1,18 @@
 package ru.fedrbodr.test.gostgroup;
 
+import org.apache.commons.math3.exception.NotPositiveException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
+import org.apache.commons.math3.util.CombinatoricsUtils;
+import org.apache.commons.math3.util.MathUtils;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.*;
+
+import static org.apache.commons.math3.util.CombinatoricsUtils.factorial;
+import static org.apache.commons.math3.util.CombinatoricsUtils.factorialDouble;
 
 /**
  * In this class you can see 3 tests
@@ -44,22 +54,42 @@ public class Tests {
 	/**
 	 * Original technical task:
 	 * 2. Написать программу, вычисляющую для любых натуральных m и r, таких что r ≤ m,
-	 * значение функции ??? - чет опен офис и пара онлайн просмотрщиков не смогли открыть формулу.
+	 * значение функции m!/(r!(m-r)!)
 	 */
 	@Test
 	public void secondTest() {
-		int m = 10;
-		int r = 15;
+		int m = 4;
+		int r = 3;
 
 		if (m > 0 && r > 0) {
 			if (r <= m) {
-				/* calculate formula value */
+				/* calculate formula value m!/(r!(m-r)!)!)*/
+				BigDecimal funkValue = new BigDecimal(factorial(m)).
+						divide(new BigDecimal(factorial(factorial(r).multiply(factorial(m - r)))), 8, RoundingMode.HALF_UP);
+				System.out.println("m!/(r!(m-r)!) = " + funkValue);
 			} else {
 				System.out.println("r must be <= m");
 			}
 		} else {
 			System.out.println("M and r must be a natural");
 		}
+	}
+
+	public static BigInteger factorial(int number) {
+		return factorial(BigInteger.valueOf(number));
+	}
+
+	public static BigInteger factorial(BigInteger number) {
+		if (number.compareTo(BigInteger.ZERO) < 0) {
+			throw new NotPositiveException(LocalizedFormats.FACTORIAL_NEGATIVE_PARAMETER, number);
+		}
+		BigInteger result = BigInteger.valueOf(1);
+
+		for (long factor = 2; factor <= number.longValue(); factor++) {
+			result = result.multiply(BigInteger.valueOf(factor));
+		}
+
+		return result;
 	}
 
 	/**
